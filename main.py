@@ -29,7 +29,12 @@ def hello_http(request):
         else:
             start = '!! No start time found !!'
 
-        print(f'Description: {description} - Start time: {start}')
+        if 'stop' in request_json['payload']:
+            stop = request_json['payload']['stop']
+        else:
+            stop = '!! No stop time found !!'
+
+        print(f'Description: {description} - Start time: {start} - Stop time: {stop}')
 
     print('request_json = {}'.format(request_json))
 
@@ -39,14 +44,14 @@ def hello_http(request):
     )
 
     event = {
-        'summary': 'Test Google Cloud Function',
+        'summary': description,
         'colorId': '4',
         'description': 'This event generated automatically from the Waldis toggl gateway script.',
         'start': {
-            'dateTime':  '2024-07-24T18:00:00+00:00',
+            'dateTime':  start,
         },
         'end': {
-            'dateTime':  '2024-07-24T19:00:00+00:00',
+            'dateTime':  stop,
         },
     }
     try:
