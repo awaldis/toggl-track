@@ -1,4 +1,4 @@
-# toggl-track to Google calendar
+# Copy toggl time entries to Google calendar
 
-A Zapier replacement that copies "toogl-track" time entries to Google calendar using their respective APIs.
+A Zapier replacement that copies "toggl" (https://toggl.com) time entries to Google calendar using their respective APIs.
 
