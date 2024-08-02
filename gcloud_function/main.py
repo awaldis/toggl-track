@@ -5,7 +5,7 @@ from google.oauth2 import service_account
 from googleapiclient.errors import HttpError
 
 @functions_framework.http
-def hello_http(request):
+def toggl_time_entry_webhook_http(request):
     """HTTP Cloud Function.
     Args:
         request (flask.Request): The request object.
