@@ -23,6 +23,7 @@ def toggl_time_entry_webhook_http(request):
             description = request_json['payload']['description']
         else:
             description = '!! No description found !!'
+            return description
                 
         if 'start' in request_json['payload']:
             start = request_json['payload']['start']
