@@ -29,13 +29,17 @@ def toggl_time_entry_webhook_http(request):
             start = request_json['payload']['start']
         else:
             start = '!! No start time found !!'
+            return start
 
         if 'stop' in request_json['payload']:
             stop = request_json['payload']['stop']
         else:
             stop = '!! No stop time found !!'
+            return stop
 
         print(f'Description: {description} - Start time: {start} - Stop time: {stop}')
+    else:
+        return 'No payload field found!'
 
     print('request_json = {}'.format(request_json))
 
