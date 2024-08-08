@@ -16,8 +16,9 @@ def toggl_time_entry_webhook_http(request):
         <https://flask.palletsprojects.com/en/1.1.x/api/#flask.make_response>.
     """
     request_json = request.get_json(silent=True)
-    request_args = request.args
 
+    # Parse out the description and start and stop times OR
+    # return with an error message if they can't be found.
     if request_json and 'payload' in request_json:
         if 'description' in request_json['payload']:
             description = request_json['payload']['description']
@@ -41,6 +42,10 @@ def toggl_time_entry_webhook_http(request):
     else:
         return 'No payload field found!'
 
+    # If we get to this point then the description, start and stop times
+    # must have been found and we can proceed to creating the event on the Google
+    # calendar.
+
     print('request_json = {}'.format(request_json))
 
     credentials = service_account.Credentials.from_service_account_file(
@@ -63,21 +68,11 @@ def toggl_time_entry_webhook_http(request):
         service = build("calendar", "v3", credentials=credentials)
 
         calendarId=os.environ["CALENDAR_EMAIL"]
-        print(f"Using calendarID: {calendarId}")
 
         event = service.events().insert(calendarId=calendarId, body=event).execute()
         print ('Event created: %s' % (event.get('htmlLink')))
+        return(f'Event created - Description: {description} - Start time: {start} - Stop time: {stop}')
 
     except HttpError as error:
         print(f"An error occurred: {error}")
-
-    if request_json and 'name' in request_json:
-        name = request_json['name']
-        print('request_json name field:{}'.format(name))
-    elif request_args and 'name' in request_args:
-        name = request_args['name']
-        print('request_args name field:{}'.format(name))
-    else:
-        name = 'World2'
-        print('No name field found.')
-    return 'Hello {}!'.format(name)
+        return(f"An error occurred: {error}")
