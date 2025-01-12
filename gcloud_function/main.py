@@ -1,5 +1,6 @@
 import functions_framework
 import os
+import json
 from googleapiclient.discovery import build
 from google.oauth2 import service_account
 from googleapiclient.errors import HttpError
@@ -23,6 +24,10 @@ def toggl_time_entry_webhook_http(request):
         if 'description' in request_json['payload']:
             description = request_json['payload']['description']
         else:
+            print("No description field found. Printing all JSON fields:")
+            # Pretty-print the entire JSON
+            print(json.dumps(request_json, indent=2))
+
             description = '!! No description found !!'
             return description
                 
@@ -40,7 +45,10 @@ def toggl_time_entry_webhook_http(request):
 
         print(f'Description: {description} - Start time: {start} - Stop time: {stop}')
     else:
-        return 'No payload field found!'
+        # No JSON or no 'payload' key. Get raw body as text.
+        raw_body = request.get_data(as_text=True)
+        print(f"No valid JSON/payload found. Raw body: {raw_body}")
+        return f"No payload field found! Body: {raw_body}"
 
     # If we get to this point then the description, start and stop times
     # must have been found and we can proceed to creating the event on the Google
